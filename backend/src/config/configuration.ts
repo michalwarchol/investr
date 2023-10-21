@@ -6,4 +6,8 @@ export default () => ({
     password: process.env.POSTGRES_PASSWORD,
     port: parseInt(process.env.DATABASE_PORT, 10) || 5432,
   },
+  jwt: {
+    secret: process.env.JWT_SECRET,
+    expiresIn: process.env.JWT_EXPIRES_IN,
+  },
 });
