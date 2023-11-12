@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { Role } from 'src/constants';
 
 import { User } from 'src/users/users.entity';
 import { UsersService } from 'src/users/users.service';
@@ -23,9 +24,9 @@ export class AuthService {
     return null;
   }
 
-  async signIn(id: string, email: string): Promise<string> {
+  async signIn(id: string, email: string, role: Role): Promise<string> {
     return this.jwtService.sign(
-      { id, email },
+      { id, email, role },
       { secret: this.configService.get('jwt.secret') },
     );
   }

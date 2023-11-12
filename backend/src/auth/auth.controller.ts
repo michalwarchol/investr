@@ -27,7 +27,7 @@ export class AuthController {
     }
 
     const { id } = user;
-    const accessToken = await this.authService.signIn(id, email);
+    const accessToken = await this.authService.signIn(id, email, user.role);
 
     return {
       accessToken,
@@ -36,7 +36,7 @@ export class AuthController {
 
   @Post('signup')
   async signUp(@Body() body: ISignUpBody): Promise<ISignInResponse> {
-    const { email, password, name } = body;
+    const { email, password, name, role } = body;
 
     if (!isEmail(email)) {
       throw new BadRequestException('Given email in invalid');
@@ -59,9 +59,10 @@ export class AuthController {
       email,
       name,
       password,
+      role,
     });
 
-    const accessToken = await this.authService.signIn(newUser.id, email);
+    const accessToken = await this.authService.signIn(newUser.id, email, role);
 
     return {
       accessToken,

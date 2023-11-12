@@ -1,3 +1,5 @@
+import { Role } from 'src/constants';
+
 export interface ISignInResponse {
   accessToken: string;
 }
@@ -11,4 +13,5 @@ export interface ISignUpBody {
   email: string;
   name: string;
   password: string;
+  role: Role;
 }
