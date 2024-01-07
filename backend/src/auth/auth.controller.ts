@@ -2,14 +2,18 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   Post,
+  Request,
   UnauthorizedException,
+  UseGuards,
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { ISignInResponse, ISignInBody, ISignUpBody } from 'src/auth/auth.dto';
 import { UsersService } from 'src/users/users.service';
 import { isEmail } from 'src/validators/isEmail';
+import { JwtAuthGuard } from 'src/guards/auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -67,5 +71,11 @@ export class AuthController {
     return {
       accessToken,
     };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async me(@Request() req) {
+    return { ...req.user, password: undefined };
   }
 }
