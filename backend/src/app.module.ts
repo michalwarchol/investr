@@ -8,19 +8,23 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { TagsModule } from './tags/tags.module';
+import { ProductsModule } from './products/products.module';
 import { RolesGuard } from './guards/role.guard';
 
 import configuration from './config/configuration';
 
 @Module({
   imports: [
-    DatabaseModule,
-    UsersModule,
-    AuthModule,
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
     }),
+    DatabaseModule,
+    UsersModule,
+    AuthModule,
+    TagsModule,
+    ProductsModule,
     PassportModule,
     JwtModule.register({
       secret: configuration().jwt.secret,

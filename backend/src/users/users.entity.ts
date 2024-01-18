@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { Role } from 'src/constants';
+import { Product } from 'src/products/products.entity';
 
 @Entity()
 export class User {
@@ -17,4 +18,7 @@ export class User {
 
   @Column('enum', { enum: ['investor', 'company'], nullable: false })
   role: Role;
+
+  @OneToMany(() => Product, (product) => product.owner)
+  products: Product[];
 }

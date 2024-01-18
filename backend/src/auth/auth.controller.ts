@@ -14,6 +14,7 @@ import { ISignInResponse, ISignInBody, ISignUpBody } from 'src/auth/auth.dto';
 import { UsersService } from 'src/users/users.service';
 import { isEmail } from 'src/validators/isEmail';
 import { JwtAuthGuard } from 'src/guards/auth.guard';
+import { IUserResponse } from 'src/users/users.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -75,7 +76,7 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async me(@Request() req) {
+  async me(@Request() req): Promise<IUserResponse> {
     return { ...req.user, password: undefined };
   }
 }
