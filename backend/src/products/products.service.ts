@@ -126,4 +126,28 @@ export class ProductsService {
 
     return newProduct;
   }
+
+  async delete(id: string, userId: string): Promise<boolean> {
+    if (!isUUID(id)) {
+      throw new NotFoundException();
+    }
+
+    const product = await this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.owner', 'users')
+      .where('product.id=:id', { id })
+      .getOne();
+
+    if (!product) {
+      throw new NotFoundException();
+    }
+
+    if (product.owner.id !== userId) {
+      throw new ForbiddenException();
+    }
+
+    const result = await this.productsRepository.delete({ id });
+
+    return result.affected > 0;
+  }
 }

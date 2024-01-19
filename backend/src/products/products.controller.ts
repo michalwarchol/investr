@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -35,7 +36,7 @@ export class ProductsController {
     return this.productsService.findByTagId(id, body.first, body.page);
   }
 
-  @Post('create')
+  @Post()
   @UseGuards(JwtAuthGuard)
   @Roles(Role.Company)
   create(
@@ -45,7 +46,7 @@ export class ProductsController {
     return this.productsService.create(req.user.id, body);
   }
 
-  @Put('update/:id')
+  @Put('/:id')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.Company)
   update(
@@ -54,5 +55,12 @@ export class ProductsController {
     @Body() body: IProductCreateProps,
   ): Promise<IProductResponse> {
     return this.productsService.update(id, req.user.id, body);
+  }
+
+  @Delete('/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Company)
+  delete(@Request() req, @Param('id') id: string): Promise<boolean> {
+    return this.productsService.delete(id, req.user.id);
   }
 }
