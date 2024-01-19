@@ -1,6 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  NotFoundException,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, In, Repository } from 'typeorm';
+import { validate as isUUID } from 'uuid';
 import { Product } from './products.entity';
 
 import { IProductCreateProps, IProductResponse } from './products.dto';
@@ -75,10 +81,49 @@ export class ProductsService {
       owner,
     });
 
-    console.log(product);
-
     await this.productsRepository.save(product);
 
     return product;
+  }
+
+  async update(
+    id: string,
+    userId: string,
+    body: IProductCreateProps,
+  ): Promise<IProductResponse> {
+    if (!isUUID(id)) {
+      throw new NotFoundException();
+    }
+
+    const product = await this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.owner', 'users')
+      .where('product.id=:id', { id })
+      .getOne();
+
+    if (!product) {
+      throw new NotFoundException();
+    }
+
+    if (product.owner.id !== userId) {
+      throw new ForbiddenException();
+    }
+
+    const tags = await this.tagsService.find({
+      where: {
+        id: In(body.tags),
+      },
+    });
+
+    const newProduct = this.productsRepository.create({
+      id,
+      ...product,
+      ...body,
+      tags,
+    });
+
+    await this.productsRepository.save(newProduct);
+
+    return newProduct;
   }
 }
