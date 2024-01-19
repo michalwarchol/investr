@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Request,
   UseGuards,
 } from '@nestjs/common';
@@ -42,5 +43,16 @@ export class ProductsController {
     @Body() body: IProductCreateProps,
   ): Promise<IProductResponse> {
     return this.productsService.create(req.user.id, body);
+  }
+
+  @Put('update/:id')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Company)
+  update(
+    @Request() req,
+    @Param('id') id: string,
+    @Body() body: IProductCreateProps,
+  ): Promise<IProductResponse> {
+    return this.productsService.update(id, req.user.id, body);
   }
 }
