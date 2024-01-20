@@ -63,4 +63,12 @@ export class ProductsController {
   delete(@Request() req, @Param('id') id: string): Promise<boolean> {
     return this.productsService.delete(id, req.user.id);
   }
+
+  @Get('user/:id')
+  findByUser(
+    @Param('id') id: string,
+    @Body() body: IPaginatorProps,
+  ): Promise<IProductResponse[]> {
+    return this.productsService.findByUserId(id, body.first, body.page);
+  }
 }
