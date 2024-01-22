@@ -7,8 +7,11 @@ import {
   Post,
   Put,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ProductsService } from './products.service';
 import {
   IProductResponse,
@@ -39,11 +42,25 @@ export class ProductsController {
   @Post()
   @UseGuards(JwtAuthGuard)
   @Roles(Role.Company)
+  @UseInterceptors(FileInterceptor('file'))
   create(
     @Request() req,
     @Body() body: IProductCreateProps,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<IProductResponse> {
-    return this.productsService.create(req.user.id, body);
+    return this.productsService.create(req.user.id, body, file);
+  }
+
+  @Post('/:id/image')
+  @UseGuards(JwtAuthGuard)
+  @Roles(Role.Company)
+  @UseInterceptors(FileInterceptor('file'))
+  uploadImage(
+    @Request() req,
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ): Promise<IProductResponse> {
+    return this.productsService.uploadImage(id, req.user.id, file);
   }
 
   @Put('/:id')
