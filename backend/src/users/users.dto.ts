@@ -1,11 +1,21 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { Role } from 'src/constants';
 import { Product } from 'src/products/products.entity';
 
-export interface IUserResponse {
+export class IUserResponse {
+  @ApiProperty()
   id: string;
+
+  @ApiProperty()
   email: string;
+
+  @ApiProperty()
   name: string;
+
+  @ApiProperty()
   role: Role;
+
+  @ApiProperty({ isArray: true })
   products: Product[];
 }
 

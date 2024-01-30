@@ -8,6 +8,12 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBadRequestResponse,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { AuthService } from './auth.service';
 import { ISignInResponse, ISignInBody, ISignUpBody } from 'src/auth/auth.dto';
@@ -16,6 +22,7 @@ import { isEmail } from 'src/validators/isEmail';
 import { JwtAuthGuard } from 'src/guards/auth.guard';
 import { IUserResponse } from 'src/users/users.dto';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -23,6 +30,11 @@ export class AuthController {
     private usersService: UsersService,
   ) {}
 
+  @ApiBody({
+    type: ISignInBody,
+  })
+  @ApiOkResponse({ status: 200, type: ISignInResponse })
+  @ApiBadRequestResponse({ status: 400, description: 'Validation error' })
   @Post('signin')
   async signIn(@Body() body: ISignInBody): Promise<ISignInResponse> {
     const { email, password } = body;
@@ -39,6 +51,11 @@ export class AuthController {
     };
   }
 
+  @ApiBody({
+    type: ISignUpBody,
+  })
+  @ApiOkResponse({ status: 200, type: ISignInResponse })
+  @ApiBadRequestResponse({ status: 400, description: 'Validation error' })
   @Post('signup')
   async signUp(@Body() body: ISignUpBody): Promise<ISignInResponse> {
     const { email, password, name, role } = body;
@@ -74,6 +91,7 @@ export class AuthController {
     };
   }
 
+  @ApiOkResponse({ status: 200, type: IUserResponse })
   @Get('me')
   @UseGuards(JwtAuthGuard)
   async me(@Request() req): Promise<IUserResponse> {
