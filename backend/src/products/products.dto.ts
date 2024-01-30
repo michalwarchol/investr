@@ -28,3 +28,26 @@ export interface IPaginatorProps {
   first: number;
   page: number;
 }
+
+export interface IWhereConditions {
+  column: string;
+  operator: 'eq' | 'not' | 'gte' | 'lte' | 'like';
+  value: string | number | boolean;
+}
+
+export interface IOrderByConditions {
+  column: string;
+  order: 'ASC' | 'DESC';
+}
+
+export interface IProductSearchProps {
+  first: number;
+  page: number;
+  where: IWhereConditions[];
+  orderBy?: IOrderByConditions;
+}
+
+export interface IProductsPaginationResponse {
+  data: IProductResponse[];
+  total: number;
+}

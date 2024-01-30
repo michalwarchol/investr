@@ -4,3 +4,11 @@ export enum Role {
 }
 
 export const uploadsPath = 'public/uploads';
+
+export const queryOperators = {
+  eq: '=',
+  not: '!=',
+  gte: '>=',
+  lte: '<=',
+  like: 'LIKE',
+};

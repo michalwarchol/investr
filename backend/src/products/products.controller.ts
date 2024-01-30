@@ -17,6 +17,8 @@ import {
   IProductResponse,
   IPaginatorProps,
   IProductCreateProps,
+  IProductSearchProps,
+  IProductsPaginationResponse,
 } from './products.dto';
 import { JwtAuthGuard } from 'src/guards/auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
@@ -27,8 +29,15 @@ export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
   @Get()
-  find(@Body() body: IPaginatorProps): Promise<IProductResponse[]> {
-    return this.productsService.findAll(body.first, body.page);
+  find(
+    @Body() body: IProductSearchProps,
+  ): Promise<IProductsPaginationResponse> {
+    return this.productsService.findAll(
+      body.first,
+      body.page,
+      body.where,
+      body.orderBy,
+    );
   }
 
   @Get('tag/:id')

@@ -11,11 +11,18 @@ import { FindManyOptions, In, Repository } from 'typeorm';
 import { validate as isUUID } from 'uuid';
 import { Product } from './products.entity';
 
-import { IProductCreateProps, IProductResponse } from './products.dto';
+import {
+  IOrderByConditions,
+  IProductCreateProps,
+  IProductResponse,
+  IProductsPaginationResponse,
+  IWhereConditions,
+} from './products.dto';
 import { UsersService } from 'src/users/users.service';
 import { TagsService } from 'src/tags/tags.service';
 import { join } from 'path';
 import { validateFile } from 'src/validators/file';
+import { queryOperators } from 'src/constants';
 
 @Injectable()
 export class ProductsService {
@@ -34,15 +41,52 @@ export class ProductsService {
     return this.productsRepository.find(options);
   }
 
-  async findAll(first: number, page: number): Promise<Product[]> {
-    return this.productsRepository.find({
-      take: first + 1,
-      skip: first * (page - 1),
-      relations: {
-        owner: true,
-        tags: true,
-      },
+  async findAll(
+    first: number,
+    page: number,
+    where: IWhereConditions[] = [],
+    orderBy?: IOrderByConditions,
+  ): Promise<IProductsPaginationResponse> {
+    const query = this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.owner', 'users')
+      .leftJoinAndSelect('product.tags', 'tags');
+
+    const whereConditions = where.map((condition) => {
+      if (condition.column === 'tag') {
+        return {
+          ...condition,
+          name: 'tags.id',
+        };
+      }
+
+      return condition;
     });
+
+    whereConditions.forEach((condition, index) => {
+      if (index === 0) {
+        query.where(
+          `${condition.column} ${queryOperators[condition.operator]} :value`,
+          { value: condition.value },
+        );
+      }
+    });
+
+    if (orderBy) {
+      query.orderBy(orderBy.column, orderBy.order);
+    }
+
+    const total = await query.getCount();
+
+    query.skip((page - 1) * first);
+    query.take(first);
+
+    const products = await query.getMany();
+
+    return {
+      data: products,
+      total,
+    };
   }
 
   async findByTagId(
