@@ -1,8 +1,14 @@
-export interface ITagResponse {
+import { ApiProperty } from '@nestjs/swagger';
+
+export class ITagResponse {
+  @ApiProperty()
   id: string;
+
+  @ApiProperty()
   name: string;
 }
 
-export interface ITagCreateProps {
+export class ITagCreateProps {
+  @ApiProperty()
   name: string;
 }

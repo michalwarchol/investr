@@ -12,6 +12,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { ApiTags, ApiBody, ApiOkResponse, ApiConsumes } from '@nestjs/swagger';
 import { ProductsService } from './products.service';
 import {
   IProductResponse,
@@ -24,10 +25,15 @@ import { JwtAuthGuard } from 'src/guards/auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { Role } from 'src/constants';
 
+@ApiTags('products')
 @Controller('products')
 export class ProductsController {
   constructor(private productsService: ProductsService) {}
 
+  @ApiBody({
+    type: IProductSearchProps,
+  })
+  @ApiOkResponse({ status: 200, type: IProductResponse })
   @Get()
   find(
     @Body() body: IProductSearchProps,
@@ -40,6 +46,10 @@ export class ProductsController {
     );
   }
 
+  @ApiBody({
+    type: IPaginatorProps,
+  })
+  @ApiOkResponse({ status: 200, type: IProductResponse })
   @Get('tag/:id')
   findByTags(
     @Param('id') id: string,
@@ -48,6 +58,11 @@ export class ProductsController {
     return this.productsService.findByTagId(id, body.first, body.page);
   }
 
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: IProductCreateProps,
+  })
+  @ApiOkResponse({ status: 200, type: IProductResponse })
   @Post()
   @UseGuards(JwtAuthGuard)
   @Roles(Role.Company)
@@ -60,6 +75,7 @@ export class ProductsController {
     return this.productsService.create(req.user.id, body, file);
   }
 
+  @ApiConsumes('multipart/form-data')
   @Post('/:id/image')
   @UseGuards(JwtAuthGuard)
   @Roles(Role.Company)
