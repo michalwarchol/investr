@@ -6,6 +6,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Request,
   UploadedFile,
   UseGuards,
@@ -36,14 +37,20 @@ export class ProductsController {
   @ApiOkResponse({ status: 200, type: IProductResponse })
   @Get()
   find(
-    @Body() body: IProductSearchProps,
+    @Query() query: IProductSearchProps,
   ): Promise<IProductsPaginationResponse> {
     return this.productsService.findAll(
-      body.first,
-      body.page,
-      body.where,
-      body.orderBy,
+      query.first,
+      query.page,
+      query.where,
+      query.orderBy,
     );
+  }
+
+  @ApiOkResponse({ status: 200, type: IProductResponse })
+  @Get('/:id')
+  findOne(@Param('id') id: string): Promise<IProductResponse> {
+    return this.productsService.findById(id);
   }
 
   @ApiBody({
@@ -107,10 +114,7 @@ export class ProductsController {
   }
 
   @Get('user/:id')
-  findByUser(
-    @Param('id') id: string,
-    @Body() body: IPaginatorProps,
-  ): Promise<IProductResponse[]> {
-    return this.productsService.findByUserId(id, body.first, body.page);
+  findByUser(@Param('id') id: string): Promise<IProductResponse[]> {
+    return this.productsService.findByUserId(id);
   }
 }

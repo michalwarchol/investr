@@ -10,6 +10,7 @@ import SignUp from "./pages/SignUp";
 import SignIn from "./pages/SignIn";
 import NewProject from "./pages/NewProject";
 import MyProjects from "./pages/MyProjects";
+import Project from "./pages/Project";
 
 import "./App.css";
 
@@ -33,6 +34,10 @@ const router = createBrowserRouter([
   {
     path: "my-projects",
     element: <MyProjects />,
+  },
+  {
+    path: "product",
+    element: <Project />,
   },
 ]);
 
