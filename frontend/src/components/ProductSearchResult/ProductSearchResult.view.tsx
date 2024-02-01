@@ -21,10 +21,9 @@ interface IProps {
 
 const ProductSearchResult = ({ product, deleteProduct }: IProps) => {
   const { user } = useContext(UserContext);
-  console.log(user && user.id);
-  console.log(product.owner.id);
+
   return (
-    <Link to="product" state={{ id: product.id }}>
+    <Link to="/product" state={{ id: product.id }}>
       <Box
         ml={4}
         mr={4}

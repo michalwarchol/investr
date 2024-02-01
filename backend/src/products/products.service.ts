@@ -280,18 +280,21 @@ export class ProductsService {
     return result.affected > 0;
   }
 
-  async findByUserId(
-    id: string,
-    first: number,
-    page: number,
-  ): Promise<IProductResponse[]> {
+  async findByUserId(id: string): Promise<IProductResponse[]> {
     return this.productsRepository
       .createQueryBuilder('product')
       .leftJoinAndSelect('product.owner', 'users')
       .leftJoinAndSelect('product.tags', 'tags')
       .where('product.owner.id=:id', { id })
-      .take(first + 1)
-      .skip(first * (page - 1))
       .getMany();
+  }
+
+  async findById(id: string): Promise<IProductResponse> {
+    return this.productsRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.owner', 'users')
+      .leftJoinAndSelect('product.tags', 'tags')
+      .where('product.id=:id', { id })
+      .getOne();
   }
 }
