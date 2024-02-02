@@ -46,3 +46,15 @@ W drugim terminalu:
   2. Wykorzystuje TypeScript, który jest silnie typizowany, co zwiększa bezpieczeństwo i niezawodność kodu.
   3. Jest to kompleksowe i dojrzałe środowisko programistyczne. Zawiera wiele narzędzi i bibliotek, które mogą pomóc w tworzeniu skomplikowanych aplikacji z mniejszą ilością wysiłku.
 </blockquote>
+
+## Funkcjonalności
+<ul>
+  <li>Resestracja</li>
+  <li>Logowanie</li>
+  <li>Dodawanie produktów</li>
+  <li>Listowanie produktów</li>
+  <li>Usuwanie produktów</li>
+</ul>
+
+## Zdjęcie poglądowe
+<img src="./frontend/dashboard.png" alt="dashboard" />
